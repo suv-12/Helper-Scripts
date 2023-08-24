@@ -22,20 +22,20 @@ class BurpExtender(IBurpExtender, IHttpListener):
         return headers, body
             
     def processHttpMessage(self, tool, is_request, content):
-        headers, body = self.getRequestHeaderAndBody(content)
+        headers, body = self.getRequestHeaderAndBody(content) #grab headers and body separetely
 
-        #Modifying current request to replace new requests        
+        #Modifying current request to replace new content        
         work = {}
         pattern = re.compile('[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}')
         
         matches = re.findall(pattern, body)
-        print(matches)
+        #print(matches) debugging code
         
         for match in matches:
             work[match] = str(uuid.uuid4())
             body = body.replace(match, work[match])
 
-        print(work)
+        #print(work) Debugging code
 
         #Build new request
         new_message = self._helpers.buildHttpMessage(headers, body)
